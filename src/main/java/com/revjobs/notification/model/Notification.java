@@ -1,49 +1,43 @@
 package com.revjobs.notification.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.index.Indexed;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "notifications",
-       indexes = {
-           @Index(name = "idx_user", columnList = "user_id"),
-           @Index(name = "idx_created", columnList = "createdAt"),
-           @Index(name = "idx_is_read", columnList = "isRead")
-       })
+@Document(collection = "notifications")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Notification {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    @Column(name = "user_id", nullable = false)
+    private String id; // MongoDB uses String IDs (ObjectId)
+
+    @Indexed
     private Long userId;
-    
-    @Column(nullable = false, length = 500)
+
     private String message;
-    
-    @Column(nullable = false, length = 50)
+
     private String type;
-    
-    @Column(nullable = false)
+
+    @Indexed
     private Boolean isRead = false;
-    
-    @Column(nullable = false)
+
+    @Indexed
     private LocalDateTime createdAt;
-    
+
     private LocalDateTime readAt;
-    
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
+
+    // Auto-set timestamp before saving
+    public void prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
         if (isRead == null) {
             isRead = false;
         }
     }
 }
-
