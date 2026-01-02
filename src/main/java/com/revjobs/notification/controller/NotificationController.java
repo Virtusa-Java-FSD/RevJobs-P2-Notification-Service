@@ -53,7 +53,7 @@ public class NotificationController {
     }
 
     @PatchMapping("/{notificationId}/read")
-    public ResponseEntity<ApiResponse<Notification>> markAsRead(@PathVariable Long notificationId) {
+    public ResponseEntity<ApiResponse<Notification>> markAsRead(@PathVariable String notificationId) {
         Notification notification = notificationService.markAsRead(notificationId);
         return ResponseEntity.ok(ApiResponse.success("Notification marked as read", notification));
     }
@@ -65,7 +65,7 @@ public class NotificationController {
     }
 
     @DeleteMapping("/{notificationId}")
-    public ResponseEntity<ApiResponse<Void>> deleteNotification(@PathVariable Long notificationId) {
+    public ResponseEntity<ApiResponse<Void>> deleteNotification(@PathVariable String notificationId) {
         notificationService.deleteNotification(notificationId);
         return ResponseEntity.ok(ApiResponse.success("Notification deleted", null));
     }
@@ -76,4 +76,3 @@ public class NotificationController {
         return ResponseEntity.ok(ApiResponse.success("All notifications deleted", null));
     }
 }
-

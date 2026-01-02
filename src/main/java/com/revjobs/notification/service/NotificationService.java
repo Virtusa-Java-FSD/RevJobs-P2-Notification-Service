@@ -24,15 +24,15 @@ public class NotificationService {
     @Transactional
     public void sendNotification(NotificationEvent event) {
         log.info("Sending notification to user: {}", event.getUserId());
-        
+
         Notification notification = new Notification();
         notification.setUserId(event.getUserId());
         notification.setMessage(event.getMessage());
         notification.setType(event.getType());
         notification.setIsRead(false);
-        
+
         notificationRepository.save(notification);
-        
+
         log.info("Notification sent successfully");
     }
 
@@ -43,7 +43,7 @@ public class NotificationService {
         notification.setMessage(message);
         notification.setType(type);
         notification.setIsRead(false);
-        
+
         return notificationRepository.save(notification);
     }
 
@@ -60,13 +60,13 @@ public class NotificationService {
     }
 
     @Transactional
-    public Notification markAsRead(Long notificationId) {
+    public Notification markAsRead(String notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification not found"));
-        
+
         notification.setIsRead(true);
         notification.setReadAt(LocalDateTime.now());
-        
+
         return notificationRepository.save(notification);
     }
 
@@ -74,20 +74,20 @@ public class NotificationService {
     public void markAllAsRead(Long userId) {
         List<Notification> unread = notificationRepository
                 .findByUserIdAndIsReadFalseOrderByCreatedAtDesc(userId);
-        
+
         unread.forEach(notification -> {
             notification.setIsRead(true);
             notification.setReadAt(LocalDateTime.now());
         });
-        
+
         notificationRepository.saveAll(unread);
     }
 
     @Transactional
-    public void deleteNotification(Long notificationId) {
+    public void deleteNotification(String notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification not found"));
-        
+
         notificationRepository.delete(notification);
     }
 
@@ -96,4 +96,3 @@ public class NotificationService {
         notificationRepository.deleteByUserId(userId);
     }
 }
-
