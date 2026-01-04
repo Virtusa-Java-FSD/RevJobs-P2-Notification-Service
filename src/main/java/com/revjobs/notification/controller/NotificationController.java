@@ -54,8 +54,14 @@ public class NotificationController {
 
     @PatchMapping("/{notificationId}/read")
     public ResponseEntity<ApiResponse<Notification>> markAsRead(@PathVariable String notificationId) {
-        Notification notification = notificationService.markAsRead(notificationId);
-        return ResponseEntity.ok(ApiResponse.success("Notification marked as read", notification));
+        try {
+            Notification notification = notificationService.markAsRead(notificationId);
+            return ResponseEntity.ok(ApiResponse.success("Notification marked as read", notification));
+        } catch (Exception e) {
+            e.printStackTrace(); // Log full stack trace to console
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Failed to mark as read: " + e.getMessage()));
+        }
     }
 
     @PatchMapping("/user/{userId}/read-all")

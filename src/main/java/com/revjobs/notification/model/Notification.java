@@ -3,10 +3,11 @@ package com.revjobs.notification.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.index.Indexed;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Document(collection = "notifications")
 @Data
@@ -27,17 +28,9 @@ public class Notification {
     private Boolean isRead = false;
 
     @Indexed
-    private LocalDateTime createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    private ZonedDateTime createdAt;
 
-    private LocalDateTime readAt;
-
-    // Auto-set timestamp before saving
-    public void prePersist() {
-        if (createdAt == null) {
-            createdAt = LocalDateTime.now();
-        }
-        if (isRead == null) {
-            isRead = false;
-        }
-    }
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    private ZonedDateTime readAt;
 }

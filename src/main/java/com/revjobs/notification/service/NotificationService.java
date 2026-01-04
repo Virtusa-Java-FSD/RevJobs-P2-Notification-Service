@@ -10,7 +10,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -65,7 +66,7 @@ public class NotificationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Notification not found"));
 
         notification.setIsRead(true);
-        notification.setReadAt(LocalDateTime.now());
+        notification.setReadAt(ZonedDateTime.now(ZoneId.of("UTC")));
 
         return notificationRepository.save(notification);
     }
@@ -77,7 +78,7 @@ public class NotificationService {
 
         unread.forEach(notification -> {
             notification.setIsRead(true);
-            notification.setReadAt(LocalDateTime.now());
+            notification.setReadAt(ZonedDateTime.now(ZoneId.of("UTC")));
         });
 
         notificationRepository.saveAll(unread);
